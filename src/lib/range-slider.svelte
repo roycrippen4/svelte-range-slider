@@ -168,6 +168,14 @@
 	 * Default = 1
 	 *
 	 *
+	 * @property {number} [value]
+	 * Single value to apply on the Slider.
+	 * Under the hood, the value is stored in an array.
+	 * **Must be used with `bind:value`**.
+	 * **Value must be defined with `$state()` rune**.
+	 * **Must be a single value with `$state()` rune**.
+	 *
+	 *
 	 * @property {number[]} [values]
 	 * Array of values to apply on the Slider.
 	 * **Must be used with `bind:values`**.
@@ -254,6 +262,7 @@
 		last,
 		rest,
 		step = 1,
+		value = $bindable(),
 		values = $bindable([(max + min) / 2]),
 		vertical = false,
 		float = false,
@@ -268,12 +277,14 @@
 		handleFormatter = formatter,
 	} = $props();
 
-	$inspect(pushy);
+	if (value) {
+		values = [value];
+	}
+
+	$inspect(values);
 
 	/** @type {Element} */
 	let slider = $state(undefined);
-
-	// state management
 	let valueLength = $state(0);
 	let focus = $state(false);
 	let handleActivated = $state(false);
@@ -300,6 +311,7 @@
 			values = [(max + min) / 2];
 			console.error("'values' prop should be an Array (https://github.com/simeydotme/svelte-range-slider-pips#slider-props)");
 		}
+
 		// trim the range so it remains as a min/max (only 2 handles)
 		// and also align the handles to the steps
 		const trimmedAlignedValues = trimRange(values.map((v) => alignValueToStep(v)));
@@ -369,6 +381,7 @@
 		if (val <= min) {
 			return fixFloat(min);
 		}
+
 		if (val >= max) {
 			return fixFloat(max);
 		}
