@@ -3,6 +3,18 @@
 	import RangePips from './range-pips.svelte';
 
 	/**
+	 * @typedef {{ activeHandle: number, startValue: number, previousValue: number, value: number, values: number[] }} ChangeEvent
+	 */
+
+	/**
+	 * @typedef {{ activeHandle: number, value: number, values: number[] }} StartEvent
+	 */
+
+	/**
+	 * @typedef {{ activeHandle: number, startValue: number, value: number, values: number[] }} StopEvent
+	 */
+
+	/**
 	 * @typedef RangeSliderProps
 	 * @property {boolean|'min'|'max'} [range]
 	 * Range style options
@@ -15,17 +27,17 @@
 	 * Default = `false`.
 	 *
 	 *
-	 * @property {(event: { activeHandle: number, startValue: number, previousValue: number, value: number, values: number[] }) => void} [onchange]
+	 * @property {(event: ChangeEvent) => void} [onchange]
 	 * Event handler for when the slider value changes
 	 * ---
-	 * event.[activeHandle]  - Index of the active handle
-	 * event.[startValue]    - Value of the slider when the user started interaction
-	 * event.[previousValue] - Previous value of the active handle
-	 * event.[value]         - Current value of the active handle
-	 * event.[values]        - The bound values array
+	 * ChangeEvent.[activeHandle]  - Index of the active handle
+	 * ChangeEvent.[startValue]    - Value of the slider when the user started interaction
+	 * ChangeEvent.[previousValue] - Previous value of the active handle
+	 * ChangeEvent.[value]         - Current value of the active handle
+	 * ChangeEvent.[values]        - The bound values array
 	 *
 	 *
-	 * @property {(event: { activeHandle: number, value: number, values: number[] }) => void} [onstart]
+	 * @property {(event: StartEvent) => void} [onstart]
 	 * Event handler for when the user starts interacting with the slider
 	 * ---
 	 * event.[activeHandle]  - Index of the active handle
@@ -33,7 +45,7 @@
 	 * event.[values]        - The bound values array
 	 *
 	 *
-	 * @property {(event: { activeHandle: number, startValue: number, value: number, values: number[] }) => void} [onstop]
+	 * @property {(event: StopEvent) => void} [onstop]
 	 * Event handler for when the user stops interacting with the slider
 	 * ---
 	 * event.[activeHandle] - Index of the active handle
@@ -280,8 +292,6 @@
 	if (value) {
 		values = [value];
 	}
-
-	$inspect(values);
 
 	/** @type {Element} */
 	let slider = $state(undefined);
@@ -908,7 +918,7 @@
 			aria-valuemin={range === true && index === 1 ? values[0] : min}
 			aria-valuemax={range === true && index === 0 ? values[1] : max}
 			aria-valuenow={value}
-			aria-valuetext="{prefix}{pureText(handleFormatter(value, index, percentOf(value)).toString())}{suffix}"
+			aria-valuetext="{prefix}{pureText(handleFormatter(value, index, percentOf(value)))}{suffix}"
 			aria-orientation={vertical ? 'vertical' : 'horizontal'}
 			aria-disabled={disabled}
 			tabindex={disabled ? -1 : 0}
@@ -916,15 +926,7 @@
 			<span class="rangeNub"></span>
 			{#if float}
 				<span class="rangeFloat">
-					{#if prefix}
-						<span class="rangeFloat-prefix">{prefix}</span>
-					{/if}
-
-					{handleFormatter(value, index, percentOf(value))}
-
-					{#if suffix}
-						<span class="rangeFloat-suffix">{suffix}</span>
-					{/if}
+					{prefix}{handleFormatter(value, index, percentOf(value))}{suffix}
 				</span>
 			{/if}
 		</span>

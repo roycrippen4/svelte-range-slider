@@ -109,25 +109,12 @@
 			class:selected={isSelected(min)}
 			class:in-range={inRange(min)}
 			style="{orientationStart}: 0%;"
-			onpointerdown={(e) => {
-				labelDown(e);
-			}}
-			onpointerup={(e) => {
-				labelUp(min, e);
-			}}
+			onpointerdown={labelDown}
+			onpointerup={(e) => labelUp(min, e)}
 		>
 			{#if all === 'label' || first === 'label'}
 				<span class="pipVal">
-					{#if prefix}
-						<span class="pipVal-prefix">{prefix}</span>
-					{/if}
-
-					{formatter(fixFloat(min), 0, 0)}
-
-					{#if suffix}
-						<span class="pipVal-suffix">
-							{suffix}
-						</span>{/if}
+					{prefix}{formatter(fixFloat(min), 0, 0)}{suffix}
 				</span>
 			{/if}
 		</span>
@@ -147,15 +134,7 @@
 				>
 					{#if all === 'label' || rest === 'label'}
 						<span class="pipVal">
-							{#if prefix}
-								<span class="pipVal-prefix">{prefix}</span>
-							{/if}
-
-							{formatter(pipVal(i), i, percentOf(pipVal(i)))}
-
-							{#if suffix}
-								<span class="pipVal-suffix">{suffix}</span>
-							{/if}
+							{prefix}{formatter(pipVal(i), i, percentOf(pipVal(i)))}{suffix}
 						</span>
 					{/if}
 				</span>
@@ -174,19 +153,7 @@
 		>
 			{#if all === 'label' || last === 'label'}
 				<span class="pipVal">
-					{#if prefix}
-						<span class="pipVal-prefix">
-							{prefix}
-						</span>
-					{/if}
-
-					{formatter(fixFloat(max), pipCount, 100)}
-
-					{#if suffix}
-						<span class="pipVal-suffix">
-							{suffix}
-						</span>
-					{/if}
+					{prefix}{formatter(fixFloat(max), pipCount, 100)}{suffix}
 				</span>
 			{/if}
 		</span>
